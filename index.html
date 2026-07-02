@@ -770,93 +770,65 @@ async function initAutocomplete() {
 
    /* ── Place selection handler ── */
 async function handlePlaceSelect(e) {
-      try {
-        /* 
-          Strategy 1: standard named properties
-          Strategy 2: for...in — traverses prototype chain, catches minified props like e.oh
-          Strategy 3: getOwnPropertyNames — catches non-enumerable own props
-        */
-        let place = null;
+  try {
+    console.log('=== gmp-select fired ===');
+    console.log('Full event:', e);
 
-        if (e.place && typeof e.place.fetchFields === 'function') {
-          place = e.place;
-        } else if (e.detail && e.detail.place && typeof e.detail.place.fetchFields === 'function') {
-          place = e.detail.place;
-        }
+    /* Direct access — e.oh is the confirmed property from your console output */
+    const place = e.oh || e.place || (e.detail && e.detail.place);
 
-        if (!place) {
-          for (const key in e) {
-            try {
-              const val = e[key];
-              if (val && typeof val === 'object' && typeof val.fetchFields === 'function') {
-                place = val; break;
-              }
-            } catch(_) {}
-          }
-        }
+    console.log('place object:', place);
+    console.log('has fetchFields:', place && typeof place.fetchFields);
 
-        if (!place) {
-          for (const key of Object.getOwnPropertyNames(e)) {
-            try {
-              const val = e[key];
-              if (val && typeof val === 'object' && typeof val.fetchFields === 'function') {
-                place = val; break;
-              }
-            } catch(_) {}
-          }
-        }
+    if (!place || typeof place.fetchFields !== 'function') {
+      console.warn('No valid place object'); return;
+    }
 
-        if (!place) { console.warn('No place object found'); return; }
+    const result = await place.fetchFields({ fields: ['addressComponents'] });
+    console.log('fetchFields result:', result);
+    console.log('place after fetch:', place);
+    console.log('addressComponents:', place.addressComponents);
 
-       await place.fetchFields({ fields: ['addressComponents'] });
+    const components = place.addressComponents || [];
+    console.log('components count:', components.length);
+    components.forEach((c, i) => console.log(i, c.types, '|', c.longText, '|', c.shortText));
 
-       const components = place.addressComponents || [];
-       if (!components.length) { console.warn('No address components'); return; }
+    const getLong  = c => c.longText  || c.long_name  || '';
+    const getShort = c => c.shortText || c.short_name || '';
 
-       /* Handle both property name styles across API versions */
-       const getLong  = c => c.longText  || c.long_name  || '';
-       const getShort = c => c.shortText || c.short_name || '';
+    let sn = '', route = '', city = '', state = '', zip = '';
 
-       let sn = '', route = '', city = '', state = '', zip = '';
+    components.forEach(comp => {
+      const types = comp.types || [];
+      if (types.includes('street_number'))                sn    = getLong(comp);
+      if (types.includes('route'))                        route = getLong(comp);
+      if (types.includes('locality'))                     city  = getLong(comp);
+      if (!city && types.includes('sublocality_level_1')) city  = getLong(comp);
+      if (types.includes('administrative_area_level_1'))  state = getShort(comp);
+      if (types.includes('postal_code'))                  zip   = getLong(comp);
+    });
 
-       components.forEach(comp => {
-         const types = comp.types || [];
-         if (types.includes('street_number'))                sn    = getLong(comp);
-         if (types.includes('route'))                        route = getLong(comp);
-         if (types.includes('locality'))                     city  = getLong(comp);
-         if (!city && types.includes('sublocality_level_1')) city  = getLong(comp);
-         if (types.includes('administrative_area_level_1'))  state = getShort(comp);
-         if (types.includes('postal_code'))                  zip   = getLong(comp);
-       });
+    console.log('RESULT → street:', sn, route, '| city:', city, '| state:', state, '| zip:', zip);
 
-       const streetVal = [sn, route].filter(Boolean).join(' ');
+    const streetVal = [sn, route].filter(Boolean).join(' ');
+    document.getElementById('street').value = streetVal;
+    const inner = getPacInner();
+    if (inner) inner.value = streetVal;
+    _pacElement.classList.remove('field-error');
 
-       /* Update hidden input */
-       hiddenInput.value = streetVal;
+    [['city', city], ['state', state], ['zip', zip]].forEach(([id, val]) => {
+      if (!val) return;
+      const el = document.getElementById(id);
+      if (el) { el.value = val; el.style.borderColor = '#c5cfe0'; }
+    });
 
-       /* Write street back into the visible PAC input */
-       const inner = getPacInner();
-       if (inner) inner.value = streetVal;
+    const nextEmpty = ['city','state','zip'].find(id => !document.getElementById(id).value);
+    if (nextEmpty) document.getElementById(nextEmpty).focus();
 
-       /* Clear error state */
-       _pacElement.classList.remove('field-error');
-
-       /* Auto-fill city / state / zip */
-       [['city', city], ['state', state], ['zip', zip]].forEach(([id, val]) => {
-         if (!val) return;
-         const el = document.getElementById(id);
-         if (el) { el.value = val; el.style.borderColor = '#c5cfe0'; }
-       });
-
-       /* Focus first still-empty address field */
-       const nextEmpty = ['city', 'state', 'zip']
-         .find(id => !document.getElementById(id).value);
-       if (nextEmpty) document.getElementById(nextEmpty).focus();
-
-     } catch (err) {
-       console.error('Place select error:', err);
-     }
-   }
+  } catch (err) {
+    console.error('handlePlaceSelect ERROR:', err);
+  }
+}
 
    /* gmp-select is the confirmed working event name */
    _pacElement.addEventListener('gmp-select',      handlePlaceSelect);
