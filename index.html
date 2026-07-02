@@ -771,27 +771,31 @@ async function initAutocomplete() {
    /* ── Place selection handler ── */
 async function handlePlaceSelect(e) {
   try {
-    console.log('=== gmp-select fired ===');
-    console.log('Full event:', e);
+    /*
+      The gmp-select event gives a PlacePrediction object (e.oh),
+      NOT a Place directly. The structure is:
+        e.oh = { placePrediction: T$ }
+      We must call .toPlace() to get a Place, then fetchFields().
+    */
+    const predictionWrapper = e.placePrediction   // official spec name
+                           || (e.oh && e.oh.placePrediction ? e.oh : null)
+                           || null;
 
-    /* Direct access — e.oh is the confirmed property from your console output */
-    const place = e.oh || e.place || (e.detail && e.detail.place);
+    /* Get the actual PlacePrediction instance */
+    const placePrediction = (predictionWrapper && predictionWrapper.placePrediction)
+                          || predictionWrapper
+                          || (e.oh && e.oh.placePrediction);
 
-    console.log('place object:', place);
-    console.log('has fetchFields:', place && typeof place.fetchFields);
-
-    if (!place || typeof place.fetchFields !== 'function') {
-      console.warn('No valid place object'); return;
+    if (!placePrediction || typeof placePrediction.toPlace !== 'function') {
+      console.warn('No valid placePrediction with toPlace()'); return;
     }
 
-    const result = await place.fetchFields({ fields: ['addressComponents'] });
-    console.log('fetchFields result:', result);
-    console.log('place after fetch:', place);
-    console.log('addressComponents:', place.addressComponents);
+    /* Convert to a Place object, then fetch address components */
+    const place = placePrediction.toPlace();
+    await place.fetchFields({ fields: ['addressComponents'] });
 
     const components = place.addressComponents || [];
-    console.log('components count:', components.length);
-    components.forEach((c, i) => console.log(i, c.types, '|', c.longText, '|', c.shortText));
+    if (!components.length) { console.warn('No address components'); return; }
 
     const getLong  = c => c.longText  || c.long_name  || '';
     const getShort = c => c.shortText || c.short_name || '';
@@ -808,9 +812,8 @@ async function handlePlaceSelect(e) {
       if (types.includes('postal_code'))                  zip   = getLong(comp);
     });
 
-    console.log('RESULT → street:', sn, route, '| city:', city, '| state:', state, '| zip:', zip);
-
     const streetVal = [sn, route].filter(Boolean).join(' ');
+
     document.getElementById('street').value = streetVal;
     const inner = getPacInner();
     if (inner) inner.value = streetVal;
