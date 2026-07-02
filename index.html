@@ -92,9 +92,16 @@
   }
   </script>
 
-  <!-- Google Maps Places API — classic loader with callback -->
-  <script async
-    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBCzHut1QaN0YNAUUKpC1RFnV3zcknsW7U&libraries=places&loading=async&callback=initAutocomplete">
+  <!--
+    Google Maps bootstrap loader (official recommended pattern for new Places API).
+    We do NOT use a callback= URL param here — initAutocomplete() is called
+    manually after DOMContentLoaded via google.maps.importLibrary('places').
+  -->
+  <script>
+    (g=>{var h,a,k,p="The Google Maps JavaScript API",c="google",l="importLibrary",q="__ib__",m=document,b=window;b=b[c]||(b[c]={});var d=b.maps||(b.maps={}),r=new Set,e=new URLSearchParams,u=()=>h||(h=new Promise(async(f,n)=>{await(a=m.createElement("script"));e.set("libraries",[...r]+"");for(k in g)e.set(k.replace(/[A-Z]/g,t=>"_"+t[0].toLowerCase()),g[k]);e.set("callback",c+".maps."+q);a.src=`https://maps.${c}apis.com/maps/api/js?`+e;d[q]=f;a.onerror=()=>h=n(Error(p+" could not load."));a.nonce=m.querySelector("script[nonce]")?.nonce||"";m.head.append(a)}));d[l]?console.warn(p+" only loads once. Ignoring:",g):d[l]=(f,...n)=>r.add(f)&&u().then(()=>d[l](f,...n))})({
+      key: "AIzaSyBCzHut1QaN0YNAUUKpC1RFnV3zcknsW7U",
+      v: "weekly"
+    });
   </script>
 
   <!-- reCAPTCHA -->
@@ -184,16 +191,13 @@
     .elig-list{list-style:none;margin-bottom:28px}
     .elig-list li{padding:10px 0;border-bottom:1px solid #eee;font-size:.97rem;display:flex;align-items:center;gap:10px;color:#333}
     .elig-list li::before{content:"✅"}
-    .elig-list li.always-eligible{background:linear-gradient(135deg,#fff8e1,#fff3cd);border:2px solid #f0c040;border-radius:12px;padding:14px 16px;margin-bottom:8px;font-weight:700;color:#7a5800;font-size:1rem}
-    .elig-list li.always-eligible::before{content:"⭐";font-size:1.1rem}
-    .always-badge{display:inline-block;background:#f0c040;color:#1a1a2e;font-size:.72rem;font-weight:800;padding:2px 10px;border-radius:20px;margin-left:8px;text-transform:uppercase;letter-spacing:.5px;vertical-align:middle}
     .check-btn{background:#0f3460;color:#fff;border:none;padding:13px 34px;border-radius:25px;font-size:1rem;font-weight:600;cursor:pointer;transition:background .2s,transform .2s}
     .check-btn:hover{background:#1a1a2e;transform:translateY(-2px)}
 
     /* ── Modal ── */
     .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:200;justify-content:center;align-items:center}
     .modal-overlay.open{display:flex}
-    .modal-box{background:#fff;border-radius:20px;padding:44px 38px;max-width:480px;width:92%;box-shadow:0 10px 50px rgba(0,0,0,.22);text-align:center}
+    .modal-box{background:#fff;border-radius:20px;padding:44px  38px;max-width:480px;width:92%;box-shadow:0 10px 50px rgba(0,0,0,.22);text-align:center}
     .modal-box h2{margin-bottom:12px;color:#1a1a2e;font-size:1.5rem}
     .modal-box p{color:#555;margin-bottom:28px;line-height:1.65}
     .modal-options{display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
@@ -217,6 +221,43 @@
     .address-div{background:#fff;border:1.5px solid #c5cfe0;border-radius:14px;padding:24px;margin-bottom:22px}
     .address-title{font-size:.92rem;font-weight:700;color:#1a1a2e;margin-bottom:16px;display:block}
     .autocomplete-hint{font-size:.78rem;color:#0f3460;margin-top:6px;display:none;align-items:center;gap:5px}
+
+    /* ── PlaceAutocompleteElement — styled via ::part() to match form inputs ── */
+    #pacMount { width: 100%; }
+    #streetPac {
+      display: block;
+      width: 100%;
+    }
+    #streetPac::part(input) {
+      padding: 13px 16px;
+      border: 1.5px solid #c5cfe0;
+      border-radius: 10px;
+      font-size: .97rem;
+      font-family: 'Segoe UI', sans-serif;
+      width: 100%;
+      box-sizing: border-box;
+      outline: none;
+      background: #fff;
+      color: #1a1a2e;
+      transition: border-color .2s;
+    }
+    #streetPac::part(input):focus {
+      border-color: #0f3460;
+      box-shadow: 0 0 0 3px rgba(15,52,96,.08);
+    }
+    #streetPac.field-error::part(input) { border-color: #dc3545; }
+
+    /* Fallback plain input shown when Places API fails */
+    #streetFallback {
+      display: none;
+      padding: 13px 16px;
+      border: 1.5px solid #c5cfe0;
+      border-radius: 10px;
+      font-size: .97rem;
+      background: #fff;
+      width: 100%;
+    }
+    #streetFallback:focus { border-color: #0f3460; box-shadow: 0 0 0 3px rgba(15,52,96,.08); outline: none; }
 
     /* ── Family Members ── */
     .family-section{background:#fff;border:1.5px solid #c5cfe0;border-radius:14px;padding:24px;margin-bottom:22px}
@@ -265,7 +306,8 @@
 </head>
 
 <body>
- <!-- ═══════════════════════════════ HEADER ═══════════════════════════════ -->
+
+<!-- ═══════════════════════════════ HEADER ═══════════════════════════════ -->
 <header>
   <div class="logo" data-en="SCN Services" data-es="Servicios SCN">SCN Services</div>
   <nav>
@@ -277,7 +319,7 @@
   </nav>
   <div class="lang-toggle">
     <button class="lang-btn active" onclick="setLang('en')">EN</button>
-    <button class="lang-btn"         onclick="setLang('es')">ES</button>
+    <button class="lang-btn"        onclick="setLang('es')">ES</button>
   </div>
 </header>
 
@@ -346,8 +388,6 @@
       SCN is a community support program helping qualifying Medicaid members throughout the Hudson Valley receive essential services — completely free of charge.
     </p>
     <div class="benefit-grid">
-
-      <!-- Meals -->
       <div class="benefit-card">
         <img class="benefit-img"
              src="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=600&q=85"
@@ -361,8 +401,6 @@
           </p>
         </div>
       </div>
-
-      <!-- Appliances -->
       <div class="benefit-card">
         <img class="benefit-img"
              src="https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=600&q=85"
@@ -376,8 +414,6 @@
           </p>
         </div>
       </div>
-
-      <!-- Taxi -->
       <div class="benefit-card">
         <img class="benefit-img"
              src="./taxi.png"
@@ -392,7 +428,6 @@
           </p>
         </div>
       </div>
-
     </div>
   </div>
 </section>
@@ -442,7 +477,6 @@
        data-es="Proveemos electrodomésticos clave para que vivas cómodamente — todos entregados sin costo.">
       We provide key household appliances to help you live comfortably — all delivered at no cost.
     </p>
-
     <div class="appliance-row">
       <img src="https://images.unsplash.com/photo-1584568694244-14fbdf83bd30?w=700&q=85" alt="Refrigerator" loading="lazy"/>
       <div class="appliance-text">
@@ -450,11 +484,10 @@
         <p data-en="Keep your food fresh with a brand-new refrigerator delivered right to your home."
            data-es="Mantén tu comida fresca con un refrigerador nuevo entregado en tu hogar.">
           Keep your food fresh with a brand-new refrigerator delivered right to your home.
-         </p>
-        <span class="appliance-tag" data-en="✅ Included Free" data-es="✅ Incluido Gratis">✅ Included Free</span>
+        </p>
+         <span class="appliance-tag" data-en="✅ Included Free" data-es="✅ Incluido Gratis">✅ Included Free</span>
       </div>
     </div>
-
     <div class="appliance-row reverse">
       <img src="https://images.unsplash.com/photo-1574269909862-7e1d70bb8078?w=700&q=85" alt="Microwave" loading="lazy"/>
       <div class="appliance-text">
@@ -481,10 +514,6 @@
           The Social Care Network (SCN) is an official <strong>New York State Medicaid</strong> program. If you have Medicaid in NY State, you may qualify — <strong>anywhere in the Hudson Valley</strong>.
         </p>
         <ul class="elig-list">
-           <li class="always-eligible" 
-             data-en="ALL WOMEN DURING PREGNANCY OR POSTPARTUM PERIOD" 
-             data-es="Todas las mujeres durante el embarazo o el período posparto">ALL WOMEN DURING PREGNANCY OR POSTPARTUM PERIOD<span class="always-badge" data-en="Always Eligible" data-es="Siempre Elegible">Always Eligible</span>
-           </li>
           <li data-en="Food insecurity or difficulty accessing healthy meals"
               data-es="Inseguridad alimentaria o dificultad para acceder a comidas saludables">
             Food insecurity or difficulty accessing healthy meals
@@ -516,7 +545,7 @@
           Check My Eligibility — Apply Now
         </button>
       </div>
-       <div class="elig-right">
+      <div class="elig-right">
         <img class="elig-img" src="https://images.unsplash.com/photo-1582213782179-e0d53f98f2ca?w=400&q=85" alt="Community" loading="lazy"/>
         <img class="elig-img" src="https://images.unsplash.com/photo-1607746882042-944635dfe10e?w=400&q=85" alt="Family" loading="lazy"/>
       </div>
@@ -538,7 +567,7 @@
       <button class="modal-option-btn" onclick="goToForm()"        data-en="Yes, I do"     data-es="Sí, lo tengo">Yes, I do</button>
       <button class="modal-option-btn" onclick="showResult(false)" data-en="No / Not Sure" data-es="No / No estoy seguro">No / Not Sure</button>
     </div>
-    <div class="modal-result eligible"     id="resultElig"
+    <div class="modal-result eligible" id="resultElig"
          data-en="🎉 Great news! You may be eligible. Please fill out the registration form."
          data-es="🎉 ¡Buenas noticias! Puedes ser elegible. Completa el formulario.">
       🎉 Great news! You may be eligible. Please fill out the registration form.
@@ -623,7 +652,7 @@
             <option value="AmeriHealth Caritas New York">AmeriHealth Caritas New York</option>
             <option value="Centene / Fidelis Care">Centene / Fidelis Care</option>
             <option value="EmblemHealth (HIP)">EmblemHealth (HIP)</option>
-             <option value="Healthfirst">Healthfirst</option>
+            <option value="Healthfirst">Healthfirst</option>
             <option value="MetroPlusHealth">MetroPlusHealth</option>
             <option value="Molina Healthcare of New York">Molina Healthcare of New York</option>
             <option value="Oscar Health">Oscar Health</option>
@@ -657,15 +686,26 @@
         <div class="address-div">
           <span class="address-title" data-en="📍 Home Address" data-es="📍 Dirección de Casa">📍 Home Address</span>
 
-          <!-- Street — classic Autocomplete on a plain input -->
+          <!--
+            Street address:
+            - #pacMount  → PlaceAutocompleteElement injected here by JS after Places library loads
+            - #streetFallback → plain <input> shown only if Places API fails
+            - #street    → hidden input holds the final street value for validation & submission
+          -->
           <div class="form-group" id="streetGroup">
             <label data-en="Street Address" data-es="Calle y Número">Street Address</label>
-            <input type="text" id="street" placeholder="Start typing your address…"
-                   required maxlength="120" autocomplete="off"/>
+
+            <div id="pacMount"></div>
+            <input type="text" id="streetFallback"
+                   placeholder="Enter your street address"
+                   maxlength="120" autocomplete="off"/>
+            <input type="hidden" id="street" required/>
+
             <p class="autocomplete-hint" id="autocompleteHint">
               <svg width="13" height="13" viewBox="0 0 24 24" fill="none"
                    stroke="#0f3460" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/>
+                <circle cx="12" cy="12" r="10"/>
+                <line x1="12" y1="8" x2="12" y2="12"/>
                 <line x1="12" y1="16" x2="12.01" y2="16"/>
               </svg>
               <span data-en="Select a suggestion to auto-fill City, State &amp; ZIP"
@@ -737,10 +777,10 @@
 <!-- ═══════════════════════════════ FOOTER ═══════════════════════════════ -->
 <footer>
   <div class="footer-links">
-    <a href="#about"       data-en="Benefits"   data-es="Beneficios">Benefits</a>
-    <a href="#gallery"     data-en="Our Food"   data-es="Nuestra Comida">Our Food</a>
+    <a href="#about"       data-en="Benefits"    data-es="Beneficios">Benefits</a>
+    <a href="#gallery"     data-en="Our Food"    data-es="Nuestra Comida">Our Food</a>
     <a href="#eligibility" data-en="Eligibility" data-es="Elegibilidad">Eligibility</a>
-    <a href="#register"    data-en="Register"   data-es="Registrarse">Register</a>
+    <a href="#register"    data-en="Register"    data-es="Registrarse">Register</a>
   </div>
   <p data-en="© 2026 SCN Services · dietfantasyscn.com · Serving All of Hudson Valley, NY · All rights reserved."
      data-es="© 2026 Servicios SCN · dietfantasyscn.com · Sirviendo Todo el Valle del Hudson, NY · Todos los derechos reservados.">
@@ -756,6 +796,15 @@ const SITE_KEY   = '6LdjrjUtAAAAAAI_6Nu0p2PE7AEGFnOGY8H2HXZ7';
 const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxCUvIDa6yYNgrLAYH49UUA5LaVuaYd7a0PixBqGvEc5u0pinQ7HlY2YLr_STEA80rulg/exec';
 
 let currentLang = 'en';
+let _pacElement  = null;   // holds the PlaceAutocompleteElement reference
+let _usingFallback = false; // true when Places API failed and plain input is shown
+
+/* ── Util: read text from inside the PAC shadow root ── */
+function getPacInner() {
+  if (!_pacElement) return null;
+  return (_pacElement.shadowRoot && _pacElement.shadowRoot.querySelector('input'))
+         || _pacElement.querySelector('input');
+}
 
 /* ── Phone formatter ── */
 function formatPhone(input) {
@@ -765,57 +814,97 @@ function formatPhone(input) {
   input.value = v;
 }
 
-/* ── Google Maps Places Autocomplete (classic — reliable) ── */
-function initAutocomplete() {
+/* ══════════════════════════════════════════════════════════════════════
+   PlaceAutocompleteElement init
+   Key fix: create the element PROGRAMMATICALLY via JS after the library
+   is fully loaded. Declaring <gmp-place-autocomplete> in raw HTML before
+   the library loads causes the element to register but never fully init,
+   which is why the dropdown never appeared in the previous version.
+══════════════════════════════════════════════════════════════════════ */
+async function initAutocomplete() {
   try {
-    const streetInput = document.getElementById('street');
+    /* importLibrary triggers the actual network fetch of the Places bundle */
+    await google.maps.importLibrary('places');
 
-    const autocomplete = new google.maps.places.Autocomplete(streetInput, {
-      types                : ['address'],
+    const mount       = document.getElementById('pacMount');
+    const hiddenInput = document.getElementById('street');
+    if (!mount || !hiddenInput) return;
+
+    /* Create element after library is confirmed loaded */
+    _pacElement = new google.maps.places.PlaceAutocompleteElement({
       componentRestrictions: { country: 'us' },
-      fields               : ['address_components']
+      types: ['address']
     });
+    _pacElement.id = 'streetPac';
+    _pacElement.setAttribute('placeholder', 'Start typing your address…');
+    mount.appendChild(_pacElement);
 
-    // Show the helper hint once Places is ready
+    /* Show the helper hint */
     const hint = document.getElementById('autocompleteHint');
     if (hint) hint.style.display = 'flex';
 
-    autocomplete.addListener('place_changed', function () {
-      const place = autocomplete.getPlace();
+    /* Sync manually-typed characters → hidden input (no suggestion picked yet) */
+    _pacElement.addEventListener('input', () => {
+      const inner = getPacInner();
+      if (inner) hiddenInput.value = inner.value;
+    });
 
-      // User pressed Enter without selecting a suggestion — leave typed value
-      if (!place.address_components) return;
+    /* Fired when the user picks a suggestion from the dropdown */
+    _pacElement.addEventListener('gmp-placeselect', async ({ place }) => {
+      await place.fetchFields({ fields: ['addressComponents'] });
 
-      let streetNumber = '', route = '', city = '', state = '', zip = '';
+      let sn = '', route = '', city = '', state = '', zip = '';
 
-      place.address_components.forEach(function (c) {
-        if (c.types.includes('street_number'))                streetNumber = c.long_name;
-        if (c.types.includes('route'))                        route        = c.long_name;
-        if (c.types.includes('locality'))                     city         = c.long_name;
-        if (!city && c.types.includes('sublocality_level_1')) city         = c.long_name;
-        if (c.types.includes('administrative_area_level_1'))  state        = c.short_name;
-        if (c.types.includes('postal_code'))                  zip          = c.long_name;
+      (place.addressComponents || []).forEach(comp => {
+        if (comp.types.includes('street_number'))                sn    = comp.longText;
+        if (comp.types.includes('route'))                        route = comp.longText;
+        if (comp.types.includes('locality'))                     city  = comp.longText;
+        if (!city && comp.types.includes('sublocality_level_1')) city  = comp.longText;
+        if (comp.types.includes('administrative_area_level_1'))  state = comp.shortText;
+        if (comp.types.includes('postal_code'))                  zip   = comp.longText;
       });
 
-      // Write cleaned street back into the input
-      streetInput.value = [streetNumber, route].filter(Boolean).join(' ');
-      streetInput.style.borderColor = '#c5cfe0';
+      const streetVal = [sn, route].filter(Boolean).join(' ');
 
-      // Auto-fill City / State / ZIP
-      [['city', city], ['state', state], ['zip', zip]].forEach(function ([id, val]) {
+      /* Update hidden input (used for validation & submission) */
+      hiddenInput.value = streetVal;
+
+      /* Write the cleaned street back into the visible PAC input */
+      const inner = getPacInner();
+      if (inner) inner.value = streetVal;
+
+      /* Clear any error state */
+      _pacElement.classList.remove('field-error');
+
+      /* Auto-fill City / State / ZIP */
+      [['city', city], ['state', state], ['zip', zip]].forEach(([id, val]) => {
         if (!val) return;
         const el = document.getElementById(id);
         if (el) { el.value = val; el.style.borderColor = '#c5cfe0'; }
       });
 
-      // Focus the first still-empty required address field
+      /* Move focus to first still-empty address field */
       const nextEmpty = ['city', 'state', 'zip']
-        .find(function (id) { return !document.getElementById(id).value; });
+        .find(id => !document.getElementById(id).value);
       if (nextEmpty) document.getElementById(nextEmpty).focus();
     });
 
   } catch (err) {
+    /* Graceful fallback: show a plain text input and hide the PAC mount */
     console.warn('Places API unavailable, using plain input:', err);
+    _usingFallback = true;
+
+    const fallback = document.getElementById('streetFallback');
+    const hidden   = document.getElementById('street');
+    const mount    = document.getElementById('pacMount');
+
+    if (mount)    mount.style.display    = 'none';
+    if (fallback) fallback.style.display = 'block';
+
+    /* Keep hidden input in sync with the fallback plain input */
+    if (fallback && hidden) {
+      fallback.addEventListener('input', () => { hidden.value = fallback.value; });
+    }
   }
 }
 
@@ -837,14 +926,25 @@ function setLang(lang) {
     if (v) o.textContent = v;
   });
 
+  /* Update regular input placeholders */
   const ph = {
-    en: { firstName:'John', lastName:'Doe', phone:'(845) 000-0000', email:'you@example.com', street:'Start typing your address…', city:'New York', state:'NY', zip:'10001' },
-    es: { firstName:'Juan', lastName:'García', phone:'(845) 000-0000', email:'tu@ejemplo.com', street:'Empieza a escribir tu dirección…', city:'Nueva York', state:'NY', zip:'10001' }
+    en: { firstName:'John', lastName:'Doe', phone:'(845) 000-0000', email:'you@example.com', city:'New York', state:'NY', zip:'10001' },
+    es: { firstName:'Juan', lastName:'García', phone:'(845) 000-0000', email:'tu@ejemplo.com', city:'Nueva York', state:'NY', zip:'10001' }
   }[lang];
   Object.entries(ph).forEach(([id, v]) => {
     const el = document.getElementById(id);
     if (el) el.placeholder = v;
   });
+
+  /* Update PAC element placeholder */
+  const pacPlaceholder = lang === 'es' ? 'Empieza a escribir tu dirección…' : 'Start typing your address…';
+  if (_pacElement) {
+    _pacElement.setAttribute('placeholder', pacPlaceholder);
+    const inner = getPacInner();
+    if (inner) inner.placeholder = pacPlaceholder;
+  }
+  const fallback = document.getElementById('streetFallback');
+  if (fallback) fallback.placeholder = pacPlaceholder;
 }
 
 /* ── Modal helpers ── */
@@ -955,13 +1055,25 @@ function handleSubmit(e) {
   if (!checkRateLimit()) { alert('⚠️ Too many attempts. Please wait a moment.'); return; }
   if (_submitting) return;
 
+  /* Ensure hidden street has whatever user typed if they didn't pick a suggestion */
+  const hiddenStreet = document.getElementById('street');
+  if (!hiddenStreet.value) {
+    if (_usingFallback) {
+      const fb = document.getElementById('streetFallback');
+      if (fb) hiddenStreet.value = fb.value;
+    } else {
+      const inner = getPacInner();
+      if (inner) hiddenStreet.value = inner.value;
+    }
+  }
+
   const raw = {
     firstName: document.getElementById('firstName').value.trim(),
     lastName:  document.getElementById('lastName').value.trim(),
     phone:     document.getElementById('phone').value.trim(),
     email:     document.getElementById('email').value.trim(),
     dob:       document.getElementById('dob').value,
-    street:    document.getElementById('street').value.trim(),
+    street:    hiddenStreet.value.trim(),
     city:      document.getElementById('city').value.trim(),
     state:     document.getElementById('state').value.trim(),
     zip:       document.getElementById('zip').value.trim(),
@@ -974,8 +1086,20 @@ function handleSubmit(e) {
 
   ['firstName','lastName','phone','dob','street','city','state','zip','language','insurance','condition'].forEach(id => {
     const ok = raw[id] !== '' && (VALIDATORS[id] ? VALIDATORS[id](raw[id]) : true);
-    const el = document.getElementById(id);
-    if (el) el.style.borderColor = ok ? '#c5cfe0' : '#dc3545';
+
+    if (id === 'street') {
+      /* Show validation error on the PAC element or fallback input */
+      if (_usingFallback) {
+        const fb = document.getElementById('streetFallback');
+        if (fb) fb.style.borderColor = ok ? '#c5cfe0' : '#dc3545';
+      } else if (_pacElement) {
+        _pacElement.classList.toggle('field-error', !ok);
+      }
+    } else {
+      const el = document.getElementById(id);
+      if (el) el.style.borderColor = ok ? '#c5cfe0' : '#dc3545';
+    }
+
     if (!ok) valid = false;
   });
 
@@ -985,7 +1109,9 @@ function handleSubmit(e) {
   }
 
   if (!valid) {
-    const fe = document.querySelector('input[style*="dc3545"], select[style*="dc3545"]');
+    const fe = document.querySelector(
+      'input[style*="dc3545"], select[style*="dc3545"], gmp-place-autocomplete.field-error, #streetFallback[style*="dc3545"]'
+    );
     if (fe) fe.scrollIntoView({ behavior: 'smooth', block: 'center' });
     return;
   }
@@ -995,7 +1121,7 @@ function handleSubmit(e) {
     return;
   }
 
-  // Collect family members
+  /* Collect family members */
   const fm = [];
   document.querySelectorAll('.fm-row').forEach(row => {
     const rid = row.id.replace('fm-row-', '');
@@ -1014,10 +1140,10 @@ function handleSubmit(e) {
 
   function doFetch(token) {
     fetch(SCRIPT_URL, {
-      method: 'POST',
-      mode:   'no-cors',
-      headers:{ 'Content-Type': 'text/plain;charset=utf-8' },
-      body: JSON.stringify(Object.assign({}, raw, { familyMembers: fm, recaptchaToken: token, smsNotify: true }))
+      method:  'POST',
+      mode:    'no-cors',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body:    JSON.stringify(Object.assign({}, raw, { familyMembers: fm, recaptchaToken: token, smsNotify: true }))
     })
     .then(() => {
       document.getElementById('scnForm').style.display    = 'none';
@@ -1041,7 +1167,11 @@ function handleSubmit(e) {
     });
   } else {
     doFetch('none');
-  } }
+  }
+}
+
+/* ── Boot ── */
+document.addEventListener('DOMContentLoaded', initAutocomplete);
 </script>
 
 </body>
