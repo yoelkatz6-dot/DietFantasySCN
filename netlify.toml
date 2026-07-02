@@ -1,18 +1,17 @@
 # netlify.toml – dietfantasyscn.com
-# Drop this file in your site root alongside index.html
-
-[build]
+ [build]
   publish = "."
   command = ""
 
+# ─── Security Headers ───────────────────────────────────────
 [[headers]]
   for = "/*"
   [headers.values]
-    X-Frame-Options            = "SAMEORIGIN"
-    X-Content-Type-Options     = "nosniff"
-    X-XSS-Protection           = "1; mode=block"
-    Referrer-Policy            = "strict-origin-when-cross-origin"
-    Permissions-Policy         = "camera=(), microphone=(), geolocation=()"
+    X-Frame-Options        = "SAMEORIGIN"
+    X-Content-Type-Options = "nosniff"
+    X-XSS-Protection       = "1; mode=block"
+    Referrer-Policy        = "strict-origin-when-cross-origin"
+    Permissions-Policy     = "camera=(), microphone=(), geolocation=()"
 
 [[headers]]
   for = "/*.html"
@@ -40,21 +39,3 @@
   for = "/*.jpg"
   [headers.values]
     Cache-Control = "public, max-age=2592000, immutable"
-
-[[redirects]]
-  from   = "http://dietfantasyscn.com/*"
-  to     = "https://www.dietfantasyscn.com/:splat"
-  status = 200
-  force  = true
-
-[[redirects]]
-  from   = "http://www.dietfantasyscn.com/*"
-  to     = "https://www.dietfantasyscn.com/:splat"
-  status = 200
-  force  = true
-
-[[redirects]]
-  from   = "https://dietfantasyscn.com/*"
-  to     = "https://www.dietfantasyscn.com/:splat"
-  status = 200
-  force  = true
