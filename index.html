@@ -24,11 +24,22 @@
   <meta name="twitter:title" content="Free Meals, Appliances &amp; Rides | SCN Hudson Valley NY"/>
   <meta name="twitter:description" content="100% free for NY Medicaid members. Nutritious meals, appliances &amp; paid rides delivered to your door across Hudson Valley."/>
   <meta name="twitter:image" content="https://images.unsplash.com/photo-1498837167922-ddd27525d352?w=1200&q=85"/>
+
+  <!-- ✅ FIX 1: Clean JSON-LD — JS line removed, valid JSON only -->
   <script type="application/ld+json">
   {"@context":"https://schema.org","@graph":[{"@type":"Organization","@id":"https://www.dietfantasyscn.com/#organization","name":"Diet Fantasy SCN","alternateName":["SCN Services","Social Care Network Hudson Valley"],"url":"https://www.dietfantasyscn.com","description":"Diet Fantasy SCN provides free nutritious meals, home appliances, and paid transportation to qualifying Medicaid members throughout the Hudson Valley, New York.","email":"info@dietfantasyscn.com","areaServed":[{"@type":"Place","name":"Hudson Valley, New York"},{"@type":"Place","name":"Orange County, NY"},{"@type":"Place","name":"Ulster County, NY"},{"@type":"Place","name":"Dutchess County, NY"},{"@type":"Place","name":"Rockland County, NY"},{"@type":"Place","name":"Westchester County, NY"},{"@type":"Place","name":"Sullivan County, NY"},{"@type":"Place","name":"Putnam County, NY"}],"inLanguage":["en-US","es-US"]},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Who qualifies for SCN free meals and services in Hudson Valley NY?","acceptedAnswer":{"@type":"Answer","text":"Any New York State Medicaid member in the Hudson Valley may qualify, including individuals during pregnancy or the postpartum period, those with high-risk chronic conditions such as diabetes or high blood pressure, and families experiencing food insecurity or housing instability."}},{"@type":"Question","name":"Is the SCN program truly free?","acceptedAnswer":{"@type":"Answer","text":"Yes, 100% free. The SCN (Social Care Network) program is funded by New York State Medicaid. There is absolutely no cost to you for meals, appliances, or transportation."}},{"@type":"Question","name":"What areas does Diet Fantasy SCN serve?","acceptedAnswer":{"@type":"Answer","text":"We serve all over the Hudson Valley including Orange, Ulster, Dutchess, Rockland, Westchester, Sullivan, and Putnam counties in New York."}},{"@type":"Question","name":"How do I apply for SCN services?","acceptedAnswer":{"@type":"Answer","text":"Simply fill out the online registration form at dietfantasyscn.com. We will review your application and contact you within 24 to 48 hours."}}]}]}
-  window.initAutocomplete = initAutocomplete;
   </script>
+
+  <!-- ✅ FIX 2: New recommended Maps bootstrap loader (no async/defer issues) -->
+  <script>
+    (g=>{var h,a,k,p="The Google Maps JavaScript API",c="google",l="importLibrary",q="__ib__",m=document,b=window;b=b[c]||(b[c]={});var d=b.maps||(b.maps={}),r=new Set,e=new URLSearchParams,u=()=>h||(h=new Promise(async(f,n)=>{await (a=m.createElement("script"));e.set("libraries",[...r]+"");for(k in g)e.set(k.replace(/[A-Z]/g,t=>"_"+t[0].toLowerCase()),g[k]);e.set("callback",c+".maps."+q);a.src=`https://maps.${c}apis.com/maps/api/js?`+e;d[q]=f;a.onerror=()=>h=n(Error(p+" could not load."));a.nonce=m.querySelector("script[nonce]")?.nonce||"";m.head.append(a)}));d[l]?console.warn(p+" only loads once. Ignoring:",g):d[l]=(f,...n)=>r.add(f)&&u().then(()=>d[l](f,...n))})({
+      key: "AIzaSyBCzHut1QaN0YNAUUKpC1RFnV3zcknsW7U",
+      v: "weekly"
+    });
+  </script>
+
   <script src="https://www.google.com/recaptcha/api.js?render=6LdjrjUtAAAAAAI_6Nu0p2PE7AEGFnOGY8H2HXZ7"></script>
+
   <style>
     *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}html{scroll-behavior:smooth}body{font-family:'Segoe UI',sans-serif;background:#f5f7fa;color:#1a1a2e}
     header{background:#1a1a2e;color:#fff;padding:16px 40px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:100;box-shadow:0 2px 12px rgba(0,0,0,.35)}
@@ -116,8 +127,28 @@
     .optional-tag{font-size:.78rem;color:#888;font-weight:400}
     .address-div{background:#fff;border:1.5px solid #c5cfe0;border-radius:14px;padding:24px;margin-bottom:22px}
     .address-title{font-size:.92rem;font-weight:700;color:#1a1a2e;margin-bottom:16px;display:block}
-    .pac-container{z-index:9999!important;border-radius:10px;box-shadow:0 8px 28px rgba(0,0,0,.15)}
-    .autocomplete-hint{font-size:.78rem;color:#0f3460;margin-top:-10px;margin-bottom:4px;display:flex;align-items:center;gap:5px}
+
+    /* ✅ FIX 3: Style the new PlaceAutocompleteElement to match your form inputs */
+    gmp-place-autocomplete {
+      width: 100%;
+      display: block;
+      --gmp-input-padding: 13px 16px;
+      --gmp-input-border: 1.5px solid #c5cfe0;
+      --gmp-input-border-radius: 10px;
+      --gmp-input-font-size: .97rem;
+      --gmp-input-font-family:  'Segoe UI', sans-serif;
+      --gmp-input-background: #fff;
+      --gmp-input-outline: none;
+    }
+    gmp-place-autocomplete:focus-within {
+      --gmp-input-border: 1.5px solid #0f3460;
+      --gmp-input-outline: 0 0 0 3px rgba(15,52,96,.08);
+    }
+    gmp-place-autocomplete.field-error {
+      --gmp-input-border: 1.5px solid #dc3545;
+    }
+
+    .autocomplete-hint{font-size:.78rem;color:#0f3460;margin-top:4px;margin-bottom:4px;display:none;align-items:center;gap:5px}
     .family-section{background:#fff;border:1.5px solid #c5cfe0;border-radius:14px;padding:24px;margin-bottom:22px}
     .family-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;flex-wrap:wrap;gap:10px}
     .fm-count{font-size:.8rem;color:#0f3460;font-weight:600;margin-left:6px}
@@ -142,7 +173,8 @@
     @media(max-width:700px){header{flex-wrap:wrap;gap:12px;padding:14px 20px}.hero h1{font-size:2rem}.form-row{grid-template-columns:1fr}.gallery-grid{grid-template-columns:1fr 1fr;grid-template-rows:auto}.gallery-item.big{grid-row:span 1}.appliance-row img{width:100%}.eligibility-box{flex-direction:column}.stats-bar{gap:28px}.form-card{padding:28px 20px}.fm-row-inner{grid-template-columns:1fr}.family-header{flex-direction:column;align-items:flex-start}}
   </style>
 </head>
-<body>
+ <body>
+
 <header>
   <div class="logo" data-en="SCN Services" data-es="Servicios SCN">SCN Services</div>
   <nav>
@@ -157,6 +189,7 @@
     <button class="lang-btn" onclick="setLang('es')">ES</button>
   </div>
 </header>
+
 <div class="hero">
   <div class="hero-bg"></div>
   <div class="hero-content">
@@ -169,15 +202,18 @@
     </div>
   </div>
 </div>
+
 <div class="stats-bar">
   <div class="stat-item"><div class="num">5,000+</div><div class="lbl" data-en="Families Served" data-es="Familias Atendidas">Families Served</div></div>
   <div class="stat-item"><div class="num">3</div><div class="lbl" data-en="Free Services" data-es="Servicios Gratuitos">Free Services</div></div>
   <div class="stat-item"><div class="num">$0</div><div class="lbl" data-en="Cost to You" data-es="Costo Para Ti">Cost to You</div></div>
   <div class="stat-item"><div class="num">24h</div><div class="lbl" data-en="Quick Response" data-es="Respuesta Rápida">Quick Response</div></div>
 </div>
+
 <div class="area-banner">
   <p data-en="🗺️ We Serve <strong>All Over the Hudson Valley</strong> — Orange, Ulster, Dutchess, Rockland, Westchester, Sullivan &amp; Putnam Counties" data-es="🗺️ Servimos <strong>Todo el Valle del Hudson</strong> — Condados de Orange, Ulster, Dutchess, Rockland, Westchester, Sullivan y Putnam">🗺️ We Serve <strong>All Over the Hudson Valley</strong> — Orange, Ulster, Dutchess, Rockland, Westchester, Sullivan &amp; Putnam Counties</p>
 </div>
+
 <section id="about">
   <div class="section-inner">
     <span class="section-label" data-en="What We Offer" data-es="Lo Que Ofrecemos">What We Offer</span>
@@ -186,10 +222,12 @@
     <div class="benefit-grid">
       <div class="benefit-card"><img class="benefit-img" src="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=600&q=85" alt="Free nutritious meal delivery Hudson Valley NY" loading="lazy"/><div class="benefit-body"><div class="b-icon">🍱</div><h3 data-en="Free Nutritious Meals" data-es="Comidas Nutritivas Gratis">Free Nutritious Meals</h3><p data-en="Wholesome, balanced meals crafted by nutrition experts and delivered fresh to your door — every day." data-es="Comidas equilibradas elaboradas por expertos en nutrición y entregadas frescas — todos los días.">Wholesome, balanced meals crafted by nutrition experts and delivered fresh to your door — every day.</p></div></div>
       <div class="benefit-card"><img class="benefit-img" src="https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=600&q=85" alt="Free home appliances Medicaid New York" loading="lazy"/><div class="benefit-body"><div class="b-icon">🏠</div><h3 data-en="Home Appliances" data-es="Electrodomésticos del Hogar">Home Appliances</h3><p data-en="Essential household appliances selected for your needs and delivered at absolutely no charge." data-es="Electrodomésticos esenciales seleccionados para tus necesidades y entregados sin ningún cargo.">Essential household appliances selected for your needs and delivered at absolutely no charge.</p></div></div>
-      <div class="benefit-card"><img class="benefit-img" src="./taxi.png" alt="Free taxi rides Medicaid Hudson Valley" loading="lazy"/><div class="benefit-body"><div class="b-icon">🚖</div><h3 data-en="Paid Taxi Rides" data-es="Viajes de Taxi Pagados">Paid Taxi Rides</h3><p data-en="Get to appointments, the grocery store, or wherever you need — all transportation fully covered." data-es="Llega a citas o donde necesites — todo el transporte completamente cubierto.">Get to appointments, the grocery store, or wherever you need — all transportation fully covered.</p></div></div>
+      <!-- ✅ FIX 4: taxi.png 404 replaced with Unsplash fallback image -->
+      <div class="benefit-card"><img class="benefit-img" src="https://images.unsplash.com/photo-1549317661-bd32c8ce0729?w=600&q=85" alt="Free taxi rides Medicaid Hudson Valley" loading="lazy"/><div class="benefit-body"><div class="b-icon">🚖</div><h3 data-en="Paid Taxi Rides" data-es="Viajes de Taxi Pagados">Paid Taxi Rides</h3><p data-en="Get to appointments, the grocery store, or wherever you need — all transportation fully covered." data-es="Llega a citas o donde necesites — todo el transporte completamente cubierto.">Get to appointments, the grocery store, or wherever you need — all transportation fully covered.</p></div></div>
     </div>
   </div>
 </section>
+
 <section id="gallery">
   <div class="section-inner">
     <span class="section-label" data-en="Our Meals" data-es="Nuestras Comidas">Our Meals</span>
@@ -204,6 +242,7 @@
     </div>
   </div>
 </section>
+
 <section id="appliances">
   <div class="section-inner">
     <span class="section-label" data-en="Home Appliances" data-es="Electrodomésticos">Home Appliances</span>
@@ -213,6 +252,7 @@
     <div class="appliance-row reverse"><img src="https://images.unsplash.com/photo-1574269909862-7e1d70bb8078?w=700&q=85" alt="Microwave" loading="lazy"/><div class="appliance-text"><h3 data-en="📦 Microwave &amp; Kitchen Essentials" data-es="📦 Microondas y Esenciales de Cocina">📦 Microwave &amp; Kitchen Essentials</h3><p data-en="From microwave ovens to small kitchen appliances — we make sure your home is fully equipped." data-es="Desde microondas hasta pequeños electrodomésticos — tu hogar completamente equipado.">From microwave ovens to small kitchen appliances — we make sure your home is fully equipped.</p><span class="appliance-tag" data-en="✅ Included Free" data-es="✅ Incluido Gratis">✅ Included Free</span></div></div>
   </div>
 </section>
+
 <section id="eligibility">
   <div class="section-inner">
     <span class="section-label" data-en="Do You Qualify?" data-es="¿Calificas?">Do You Qualify?</span>
@@ -238,6 +278,7 @@
     </div>
   </div>
 </section>
+
 <div class="modal-overlay" id="eligModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
   <div class="modal-box">
     <h2 id="modalTitle" data-en="SCN Eligibility Check" data-es="Verificación de Elegibilidad SCN">SCN Eligibility Check</h2>
@@ -251,6 +292,7 @@
     <button class="modal-close-btn" onclick="closeModal()" data-en="Close" data-es="Cerrar">Close</button>
   </div>
 </div>
+
 <section id="register">
   <div class="section-inner">
     <span class="section-label" data-en="Apply Now" data-es="Aplicar Ahora">Apply Now</span>
@@ -269,17 +311,34 @@
         <div class="form-group"><label data-en="Preferred Language" data-es="Idioma de Preferencia">Preferred Language</label><select id="language" required><option value="">-- Select Language / Seleccione Idioma --</option><option value="English">English</option><option value="Spanish">Español</option></select></div>
         <div class="form-group"><label data-en="Medicaid Insurance Plan (Hudson Valley)" data-es="Plan de Seguro Medicaid (Valle del Hudson)">Medicaid Insurance Plan (Hudson Valley)</label><select id="insurance" required><option value="">-- Select Your Insurance / Seleccione Su Seguro --</option><option value="Affinity Health Plan">Affinity Health Plan</option><option value="AmeriHealth Caritas New York">AmeriHealth Caritas New York</option><option value="Centene / Fidelis Care">Centene / Fidelis Care</option><option value="EmblemHealth (HIP)">EmblemHealth (HIP)</option><option value="Healthfirst">Healthfirst</option><option value="MetroPlusHealth">MetroPlusHealth</option><option value="Molina Healthcare of New York">Molina Healthcare of New York</option><option value="Oscar Health">Oscar Health</option><option value="UnitedHealthcare Community Plan">UnitedHealthcare Community Plan</option><option value="WellCare of New York">WellCare of New York</option><option value="Other / Not Listed">Other / Not Listed</option></select></div>
         <div class="form-group"><label data-en="Health Condition or Special Need" data-es="Condición de Salud o Necesidad Especial">Health Condition or Special Need</label><select id="condition" required><option value="">-- Select a Condition / Seleccione una Condición --</option><option value="Pregnancy / Postpartum" data-en="1. Pregnancy / Postpartum" data-es="1. Embarazo / Posparto">1. Pregnancy / Postpartum</option><option value="High Risk – Diabetes / Cholesterol / Blood Pressure" data-en="2. High Risk – Diabetes / Cholesterol / Blood Pressure" data-es="2. Alto Riesgo – Diabetes / Colesterol / Presión Arterial">2. High Risk – Diabetes / Cholesterol / Blood Pressure</option><option value="Other Condition or Disability (includes spouse or child)" data-en="3. Other Condition or Disability (includes spouse or child)" data-es="3. Otra Condición o Discapacidad (incluye cónyuge o hijo)">3. Other Condition or Disability (includes spouse or child)</option><option value="Prefer Not to Say" data-en="4. Prefer Not to Say" data-es="4. Prefiero No Decirlo">4. Prefer Not to Say</option></select></div>
+
         <div class="address-div">
           <span class="address-title" data-en="📍 Home Address" data-es="📍 Dirección de Casa">📍 Home Address</span>
-          <div class="form-group" id="streetGroup"><label data-en="Street Address" data-es="Calle y Número">Street Address</label><input type="text" id="street" placeholder="Start typing your address…" required maxlength="120" autocomplete="off"/><p class="autocomplete-hint" id="autocompleteHint" style="display:none;"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#0f3460" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg><span data-en="Select a suggestion to auto-fill City, State &amp; ZIP" data-es="Selecciona una sugerencia para completar Ciudad, Estado y CP">Select a suggestion to auto-fill City, State &amp; ZIP</span></p></div>
-          <div class="form-row"><div class="form-group"><label data-en="City" data-es="Ciudad">City</label><input type="text" id="city" placeholder="New York" required maxlength="80" autocomplete="address-level2"/></div><div class="form-group"><label data-en="State" data-es="Estado">State</label><input type="text" id="state" placeholder="NY" required maxlength="40" autocomplete="address-level1"/></div></div>
+
+          <!-- ✅ FIX 5: PlaceAutocompleteElement injected here by JS; hidden input holds value for submission -->
+          <div class="form-group" id="streetGroup">
+            <label data-en="Street Address" data-es="Calle y Número">Street Address</label>
+            <!-- gmp-place-autocomplete will be inserted here dynamically -->
+            <input type="hidden" id="street" required/>
+            <p class="autocomplete-hint" id="autocompleteHint">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#0f3460" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+              <span data-en="Select a suggestion to auto-fill City, State &amp; ZIP" data-es="Selecciona una sugerencia para completar Ciudad, Estado y CP">Select a suggestion to auto-fill City, State &amp; ZIP</span>
+            </p>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group"><label data-en="City" data-es="Ciudad">City</label><input type="text" id="city" placeholder="New York" required maxlength="80" autocomplete="address-level2"/></div>
+            <div class="form-group"><label data-en="State" data-es="Estado">State</label><input type="text" id="state" placeholder="NY" required maxlength="40" autocomplete="address-level1"/></div>
+          </div>
           <div class="form-group"><label data-en="ZIP Code" data-es="Código Postal">ZIP Code</label><input type="text" id="zip" placeholder="10001" required maxlength="10" autocomplete="postal-code"/></div>
         </div>
+
         <div class="family-section">
           <div class="family-header"><div><span class="address-title" style="margin-bottom:0;" data-en="👨‍👩‍👧‍👦 Family Members" data-es="👨‍👩‍👧‍👦 Miembros de la Familia">👨‍👩‍👧‍👦 Family Members</span><span class="fm-count" id="fmCount"></span></div><button type="button" class="add-fm-btn" id="addFmBtn" onclick="addFamilyMember()" data-en="+ Add Member" data-es="+ Agregar Miembro">+ Add Member</button></div>
           <p class="family-note" data-en="Optional — Add up to 10 family members (spouse, children, etc.) to include in your application." data-es="Opcional — Agregue hasta 10 miembros de la familia (cónyuge, hijos, etc.) para incluir en su solicitud.">Optional — Add up to 10 family members (spouse, children, etc.) to include in your application.</p>
           <div id="familyMembersList"></div>
         </div>
+
         <p class="recaptcha-note">Protected by reCAPTCHA — <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">Privacy</a> &amp; <a href="https://policies.google.com/terms" target="_blank" rel="noopener">Terms</a></p>
         <button type="submit" class="submit-btn" data-en="🚀 Submit Application" data-es="🚀 Enviar Solicitud">🚀 Submit Application</button>
       </form>
@@ -287,36 +346,298 @@
     </div>
   </div>
 </section>
+
 <footer>
   <div class="footer-links"><a href="#about" data-en="Benefits" data-es="Beneficios">Benefits</a><a href="#gallery" data-en="Our Food" data-es="Nuestra Comida">Our Food</a><a href="#eligibility" data-en="Eligibility" data-es="Elegibilidad">Eligibility</a><a href="#register" data-en="Register" data-es="Registrarse">Register</a></div>
   <p data-en="© 2026 SCN Services · dietfantasyscn.com · Serving All of Hudson Valley, NY · All rights reserved." data-es="© 2026 Servicios SCN · dietfantasyscn.com · Sirviendo Todo el Valle del Hudson, NY · Todos los derechos reservados.">© 2026 SCN Services · dietfantasyscn.com · Serving All of Hudson Valley, NY · All rights reserved.</p>
 </footer>
+
 <script>
 'use strict';
-const SITE_KEY='6LdjrjUtAAAAAAI_6Nu0p2PE7AEGFnOGY8H2HXZ7';
-const SCRIPT_URL='https://script.google.com/macros/s/AKfycbxCUvIDa6yYNgrLAYH49UUA5LaVuaYd7a0PixBqGvEc5u0pinQ7HlY2YLr_STEA80rulg/exec';
-let currentLang='en';
-function formatPhone(input){let v=input.value.replace(/\D/g,'').substring(0,10);if(v.length>=6)v='('+v.substring(0,3)+') '+v.substring(3,6)+'-'+v.substring(6);else if(v.length>=3)v='('+v.substring(0,3)+') '+v.substring(3);input.value=v;}
-function initAutocomplete(){try{const si=document.getElementById('street');const ac=new google.maps.places.Autocomplete(si,{types:['address'],componentRestrictions:{country:'us'},fields:['address_components']});document.getElementById('autocompleteHint').style.display='flex';ac.addListener('place_changed',function(){const p=ac.getPlace();if(!p.address_components)return;let sn='',r='',c='',s='',z='';p.address_components.forEach(function(x){if(x.types.includes('street_number'))sn=x.long_name;if(x.types.includes('route'))r=x.long_name;if(x.types.includes('locality'))c=x.long_name;if(!c&&x.types.includes('sublocality_level_1'))c=x.long_name;if(x.types.includes('administrative_area_level_1'))s=x.short_name;if(x.types.includes('postal_code'))z=x.long_name;});si.value=[sn,r].filter(Boolean).join(' ');si.style.borderColor='#c5cfe0';[['city',c],['state',s],['zip',z]].forEach(function([id,v]){if(!v)return;const el=document.getElementById(id);if(el){el.value=v;el.style.borderColor='#c5cfe0';}});const ne=['city','state','zip'].find(function(id){return!document.getElementById(id).value;});if(ne)document.getElementById(ne).focus();});}catch(e){console.warn('Places API unavailable:',e);}}
-function setLang(lang){if(lang!=='en'&&lang!=='es')return;currentLang=lang;document.querySelectorAll('.lang-btn').forEach(function(b,i){b.classList.toggle('active',(lang==='en'&&i===0)||(lang==='es'&&i===1));});document.querySelectorAll('[data-en]').forEach(function(el){if(el.tagName==='OPTION')return;const v=lang==='en'?el.getAttribute('data-en'):el.getAttribute('data-es');if(v)el.innerHTML=v;});document.querySelectorAll('select option[data-en]').forEach(function(o){const v=lang==='en'?o.getAttribute('data-en'):o.getAttribute('data-es');if(v)o.textContent=v;});const ph={en:{firstName:'John',lastName:'Doe',phone:'(845) 000-0000',email:'you@example.com',city:'New York',state:'NY',zip:'10001'},es:{firstName:'Juan',lastName:'García',phone:'(845) 000-0000',email:'tu@ejemplo.com',city:'Nueva York',state:'NY',zip:'10001'}}[lang];Object.entries(ph).forEach(function([id,v]){const el=document.getElementById(id);if(el)el.placeholder=v;});const se=document.getElementById('street');if(se)se.placeholder=lang==='es'?'Empieza a escribir tu dirección…':'Start typing your address…';}
-function goToForm(){closeModal();document.getElementById('register').scrollIntoView({behavior:'smooth'});}
-function openModal(){document.getElementById('eligModal').classList.add('open');document.getElementById('resultElig').style.display='none';document.getElementById('resultNotElig').style.display='none';}
-function closeModal(){document.getElementById('eligModal').classList.remove('open');}
-function showResult(e){e=e===true;document.getElementById('resultElig').style.display=e?'block':'none';document.getElementById('resultNotElig').style.display=e?'none':'block';if(e)setTimeout(function(){closeModal();document.getElementById('register').scrollIntoView({behavior:'smooth'});},2400);}
-document.getElementById('eligModal').addEventListener('click',function(e){if(e.target===this)closeModal();});
-document.addEventListener('keydown',function(e){if(e.key==='Escape')closeModal();});
-let fmNextId=1;const MAX_FM=10;
-function updateFmCount(){const c=document.querySelectorAll('.fm-row').length;const b=document.getElementById('fmCount');const a=document.getElementById('addFmBtn');if(b)b.textContent=c>0?'('+c+' / '+MAX_FM+')':'';if(a)a.disabled=c>=MAX_FM;}
-function addFamilyMember(){if(document.querySelectorAll('.fm-row').length>=MAX_FM)return;const id=fmNextId++;const idx=document.querySelectorAll('.fm-row').length+1;const list=document.getElementById('familyMembersList');const div=document.createElement('div');div.className='fm-row';div.id='fm-row-'+id;const nl=currentLang==='es'?'Nombre del Miembro '+idx:'Member '+idx+' Name';const dl=currentLang==='es'?'Fecha de Nacimiento':'Date of Birth';const np=currentLang==='es'?'Nombre completo':'Full name';div.innerHTML='<div class="fm-row-inner"><div class="form-group"><label>'+nl+'</label><input type="text" id="fm_name_'+id+'" placeholder="'+np+'" maxlength="80" autocomplete="off"/></div><div class="form-group"><label>'+dl+'</label><input type="date" id="fm_dob_'+id+'" autocomplete="off"/></div><button type="button" class="remove-fm-btn" onclick="removeFamilyMember('+id+')" aria-label="Remove">✕</button></div>';list.appendChild(div);updateFmCount();const ni=document.getElementById('fm_name_'+id);if(ni)ni.focus();}
-function removeFamilyMember(id){const el=document.getElementById('fm-row-'+id);if(el){el.style.transition='opacity 0.2s';el.style.opacity='0';setTimeout(function(){el.remove();updateFmCount();},220);}}
-const VALIDATORS={firstName:function(v){return/^[A-Za-zÀ-ÖØ-öø-ÿ'\- ]{1,60}$/.test(v);},lastName:function(v){return/^[A-Za-zÀ-ÖØ-öø-ÿ'\- ]{1,60}$/.test(v);},phone:function(v){return v.replace(/\D/g,'').length>=10;},email:function(v){return v===''||/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v);},dob:function(v){return/^\d{4}-\d{2}-\d{2}$/.test(v)&&!isNaN(Date.parse(v));},street:function(v){return v.length>=3&&v.length<=120;},city:function(v){return/^[A-Za-zÀ-ÖØ-öø-ÿ\s'\-\.]{2,80}$/.test(v);},state:function(v){return/^[A-Za-z\s]{2,40}$/.test(v);},zip:function(v){return/^[\d\-\s]{3,10}$/.test(v);},language:function(v){return v!=='';},insurance:function(v){return v!=='';},condition:function(v){return v!=='';}}; 
-const _rate={count:0,resetAt:0};function checkRateLimit(){const n=Date.now();if(n>_rate.resetAt){_rate.count=0;_rate.resetAt=n+60000;}return++_rate.count<=3;}
-let _submitting=false;
-function handleSubmit(e){e.preventDefault();if(document.getElementById('hp_website').value!=='')return;if(!checkRateLimit()){alert('⚠️ Too many attempts. Please wait a moment.');return;}if(_submitting)return;const raw={firstName:document.getElementById('firstName').value.trim(),lastName:document.getElementById('lastName').value.trim(),phone:document.getElementById('phone').value.trim(),email:document.getElementById('email').value.trim(),dob:document.getElementById('dob').value,street:document.getElementById('street').value.trim(),city:document.getElementById('city').value.trim(),state:document.getElementById('state').value.trim(),zip:document.getElementById('zip').value.trim(),language:document.getElementById('language').value,insurance:document.getElementById('insurance').value,condition:document.getElementById('condition').value};let valid=true;['firstName','lastName','phone','dob','street','city','state','zip','language','insurance','condition'].forEach(function(id){const el=document.getElementById(id);if(!el)return;const ok=raw[id]!==''&&(VALIDATORS[id]?VALIDATORS[id](raw[id]):true);el.style.borderColor=ok?'#c5cfe0':'#dc3545';if(!ok)valid=false;});if(raw.email&&!VALIDATORS.email(raw.email)){document.getElementById('email').style.borderColor='#dc3545';valid=false;}if(!valid){const fe=document.querySelector('input[style*="dc3545"],select[style*="dc3545"]');if(fe)fe.scrollIntoView({behavior:'smooth',block:'center'});return;}if(new Date(raw.dob)>=new Date()){document.getElementById('dob').style.borderColor='#dc3545';return;}const fm=[];document.querySelectorAll('.fm-row').forEach(function(row){const rid=row.id.replace('fm-row-','');const ne=document.getElementById('fm_name_'+rid);const de=document.getElementById('fm_dob_'+rid);const n=ne?ne.value.trim():'';const d=de?de.value:'';if(n||d)fm.push({name:n,dob:d});});_submitting=true;const btn=document.querySelector('.submit-btn');const orig=btn.innerHTML;btn.disabled=true;btn.innerHTML=currentLang==='es'?'⏳ Enviando...':'⏳ Submitting…';function doFetch(token){fetch(SCRIPT_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(Object.assign({},raw,{familyMembers:fm,recaptchaToken:token,smsNotify:true}))}).then(function(){document.getElementById('scnForm').style.display='none';document.getElementById('successMsg').style.display='block';setLang(currentLang);}).catch(function(err){console.error('Fetch error:',err);_submitting=false;btn.disabled=false;btn.innerHTML=orig;alert('❌ Submission failed. Please try again.');});}
-if(typeof grecaptcha!=='undefined'){grecaptcha.ready(function(){grecaptcha.execute(SITE_KEY,{action:'submit'}).then(function(t){doFetch(t);}).catch(function(){doFetch('none');});});}else{doFetch('none');}}
-window.initAutocomplete = initAutocomplete;
+
+const SITE_KEY = '6LdjrjUtAAAAAAI_6Nu0p2PE7AEGFnOGY8H2HXZ7';
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxCUvIDa6yYNgrLAYH49UUA5LaVuaYd7a0PixBqGvEc5u0pinQ7HlY2YLr_STEA80rulg/exec';
+
+let currentLang = 'en';
+
+function formatPhone(input) {
+  let v = input.value.replace(/\D/g, '').substring(0, 10);
+  if (v.length >= 6) v = '(' + v.substring(0,3) + ') ' + v.substring(3,6) + '-' + v.substring(6);
+  else if (v.length >= 3) v = '(' + v.substring(0,3) + ') ' + v.substring(3);
+  input.value = v;
+}
+
+// ✅ FIX 6: Updated to use new PlaceAutocompleteElement API
+async function initAutocomplete() {
+  try {
+    const { PlaceAutocompleteElement } = await google.maps.importLibrary('places');
+
+    const hiddenStreet = document.getElementById('street');
+    const streetGroup   = document.getElementById('streetGroup');
+    const hint         = document.getElementById('autocompleteHint');
+
+    // Build the new element
+    const pac = new PlaceAutocompleteElement({
+      componentRestrictions: { country: 'us' },
+      types: ['address']
+    });
+
+    // Insert before the hidden input so it appears in the right DOM position
+    streetGroup.insertBefore(pac, hiddenStreet);
+
+    // Show the helper hint
+    if (hint) hint.style.display = 'flex';
+
+    // Sync typed text → hidden input (for manual-entry fallback & validation)
+    pac.addEventListener('input', () => {
+      const inner = pac.querySelector('input');
+      if (inner) hiddenStreet.value = inner.value;
+    });
+
+    // Handle place selection
+    pac.addEventListener('gmp-placeselect', async ({ place }) => {
+      await place.fetchFields({ fields: ['addressComponents'] });
+
+      let sn = '', route = '', city = '', state = '', zip = '';
+      place.addressComponents.forEach(comp => {
+        if (comp.types.includes('street_number'))          sn    = comp.longText;
+        if (comp.types.includes('route'))                  route = comp.longText;
+        if (comp.types.includes('locality'))               city  = comp.longText;
+        if (!city && comp.types.includes('sublocality_level_1')) city = comp.longText;
+        if (comp.types.includes('administrative_area_level_1')) state = comp.shortText;
+        if (comp.types.includes('postal_code'))            zip   = comp.longText;
+      });
+
+      const streetVal = [sn, route].filter(Boolean).join(' ');
+      hiddenStreet.value = streetVal;
+
+      // Also update the element's inner input text so user sees the street
+      const inner = pac.querySelector('input');
+      if (inner) inner.value = streetVal;
+
+      // Populate city / state / zip
+      [['city', city], ['state', state], ['zip', zip]].forEach(([id, v]) => {
+        if (!v) return;
+        const el = document.getElementById(id);
+        if (el) { el.value = v; el.style.borderColor = '#c5cfe0'; }
+      });
+    });
+
+  } catch (e) {
+    console.warn('Places API unavailable:', e);
+    // Fallback: show the plain text input
+    const hiddenStreet = document.getElementById('street');
+    if (hiddenStreet) {
+      hiddenStreet.type = 'text';
+      hiddenStreet.placeholder = 'Start typing your address…';
+    }
+  }
+}
+
+function setLang(lang) {
+  if (lang !== 'en' && lang !== 'es') return;
+  currentLang = lang;
+  document.querySelectorAll('.lang-btn').forEach((b, i) => {
+    b.classList.toggle('active', (lang === 'en' && i === 0) || (lang === 'es' && i === 1));
+  });
+  document.querySelectorAll('[data-en]').forEach(el => {
+    if (el.tagName === 'OPTION') return;
+    const v = lang === 'en' ? el.getAttribute('data-en') : el.getAttribute('data-es');
+    if (v) el.innerHTML = v;
+  });
+  document.querySelectorAll('select option[data-en]').forEach(o => {
+    const v = lang === 'en' ? o.getAttribute('data-en') : o.getAttribute('data-es');
+    if (v) o.textContent = v;
+  });
+  const ph = {
+    en: { firstName:'John', lastName:'Doe', phone:'(845) 000-0000', email:'you@example.com', city:'New York', state:'NY', zip:'10001' },
+    es: { firstName:'Juan', lastName:'García', phone:'(845) 000-0000', email:'tu@ejemplo.com', city:'Nueva York', state:'NY', zip:'10001' }
+  }[lang];
+  Object.entries(ph).forEach(([id, v]) => {
+    const el = document.getElementById(id);
+    if (el) el.placeholder = v;
+  });
+  const pacInner = document.querySelector('gmp-place-autocomplete input');
+  if (pacInner) pacInner.placeholder = lang === 'es' ? 'Empieza a escribir tu dirección…' : 'Start typing your address…';
+}
+
+function goToForm()   { closeModal(); document.getElementById('register').scrollIntoView({ behavior: 'smooth' }); }
+function openModal()  { document.getElementById('eligModal').classList.add('open'); document.getElementById('resultElig').style.display = 'none'; document.getElementById('resultNotElig').style.display = 'none'; }
+function closeModal() { document.getElementById('eligModal').classList.remove('open'); }
+function showResult(e) {
+  e = e === true;
+  document.getElementById('resultElig').style.display     = e ? 'block' : 'none';
+  document.getElementById('resultNotElig').style.display = e ? 'none'  : 'block';
+  if (e) setTimeout(() => { closeModal(); document.getElementById('register').scrollIntoView({ behavior: 'smooth' }); }, 2400);
+}
+
+document.getElementById('eligModal').addEventListener('click', function(e) { if (e.target === this) closeModal(); });
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+
+let fmNextId = 1;
+const MAX_FM = 10;
+
+function updateFmCount() {
+  const c = document.querySelectorAll('.fm-row').length;
+  const b = document.getElementById('fmCount');
+  const a = document.getElementById('addFmBtn');
+  if (b) b.textContent = c > 0 ? '(' + c + ' / ' + MAX_FM + ')' : '';
+  if (a) a.disabled = c >= MAX_FM;
+}
+
+function addFamilyMember() {
+  if (document.querySelectorAll('.fm-row').length >= MAX_FM) return;
+  const id  = fmNextId++;
+  const idx = document.querySelectorAll('.fm-row').length + 1;
+  const list = document.getElementById('familyMembersList');
+  const div  = document.createElement('div');
+  div.className = 'fm-row';
+  div.id = 'fm-row-' + id;
+  const nl = currentLang === 'es' ? 'Nombre del Miembro ' + idx : 'Member ' + idx + ' Name';
+  const dl = currentLang === 'es' ? 'Fecha de Nacimiento' : 'Date of Birth';
+  const np = currentLang === 'es' ? 'Nombre completo' : 'Full name';
+  div.innerHTML = '<div class="fm-row-inner"><div class="form-group"><label>' + nl + '</label><input type="text" id="fm_name_' + id + '" placeholder="' + np + '" maxlength="80" autocomplete="off"/></div><div class="form-group"><label>' + dl + '</label><input type="date" id="fm_dob_' + id + '" autocomplete="off"/></div><button type="button" class="remove-fm-btn" onclick="removeFamilyMember(' + id + ')" aria-label="Remove">✕</button></div>';
+  list.appendChild(div);
+  updateFmCount();
+  const ni = document.getElementById('fm_name_' + id);
+  if (ni) ni.focus();
+}
+
+function removeFamilyMember(id) {
+  const el = document.getElementById('fm-row-' + id);
+  if (el) {
+    el.style.transition = 'opacity 0.2s';
+    el.style.opacity = '0';
+    setTimeout(() => { el.remove(); updateFmCount(); }, 220);
+  }
+}
+
+const VALIDATORS = {
+  firstName: v => /^[A-Za-zÀ-ÖØ-öø-ÿ'\- ]{1,60}$/.test(v),
+  lastName:  v => /^[A-Za-zÀ-ÖØ-öø-ÿ'\- ]{1,60}$/.test(v),
+  phone:     v => v.replace(/\D/g,'').length >= 10,
+  email:     v => v === '' || /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v),
+  dob:       v => /^\d{4}-\d{2}-\d{2}$/.test(v) && !isNaN(Date.parse(v)),
+  street:    v => v.length >= 3 && v.length <= 120,
+  city:      v => /^[A-Za-zÀ-ÖØ-öø-ÿ\s'\-\.]{2,80}$/.test(v),
+  state:     v => /^[A-Za-z\s]{2,40}$/.test(v),
+  zip:       v => /^[\d\-\s]{3,10}$/.test(v),
+  language:  v => v !== '',
+  insurance: v => v !== '',
+  condition: v => v !== ''
+};
+
+const _rate = { count: 0, resetAt: 0 };
+function checkRateLimit() {
+  const n = Date.now();
+  if (n > _rate.resetAt) { _rate.count = 0; _rate.resetAt = n + 60000; }
+  return ++_rate.count <= 3;
+}
+
+let _submitting = false;
+
+function handleSubmit(e) {
+  e.preventDefault();
+  if (document.getElementById('hp_website').value !== '') return;
+  if (!checkRateLimit()) { alert('⚠️ Too many attempts. Please wait a moment.'); return; }
+  if (_submitting) return;
+
+  // ✅ FIX 7: Also grab value from PlaceAutocompleteElement's inner input as fallback
+  const pacInner = document.querySelector('gmp-place-autocomplete input');
+  const hiddenStreet = document.getElementById('street');
+  if (pacInner && !hiddenStreet.value && pacInner.value) {
+    hiddenStreet.value = pacInner.value;
+  }
+
+  const raw = {
+    firstName: document.getElementById('firstName').value.trim(),
+    lastName:  document.getElementById('lastName').value.trim(),
+    phone:     document.getElementById('phone').value.trim(),
+    email:     document.getElementById('email').value.trim(),
+    dob:       document.getElementById('dob').value,
+    street:    hiddenStreet.value.trim(),
+    city:      document.getElementById('city').value.trim(),
+    state:     document.getElementById('state').value.trim(),
+    zip:       document.getElementById('zip').value.trim(),
+    language:  document.getElementById('language').value,
+    insurance: document.getElementById('insurance').value,
+    condition: document.getElementById('condition').value
+  };
+
+  let valid = true;
+  ['firstName','lastName','phone','dob','street','city','state','zip','language','insurance','condition'].forEach(id => {
+    const isStreet = id === 'street';
+    const el       = isStreet ? document.querySelector('gmp-place-autocomplete') || document.getElementById('street') : document.getElementById(id);
+    if (!el) return;
+    const ok = raw[id] !== '' && (VALIDATORS[id] ? VALIDATORS[id](raw[id]) : true);
+    if (isStreet) {
+      // Apply error class to the PAC element or hidden input container
+      const pac = document.querySelector('gmp-place-autocomplete');
+      if (pac) pac.classList.toggle('field-error', !ok);
+    } else {
+      el.style.borderColor = ok ? '#c5cfe0' : '#dc3545';
+    }
+    if (!ok) valid = false;
+  });
+
+  if (raw.email && !VALIDATORS.email(raw.email)) {
+    document.getElementById('email').style.borderColor = '#dc3545';
+    valid = false;
+  }
+  if (!valid) {
+    const fe = document.querySelector('input[style*="dc3545"], select[style*="dc3545"], gmp-place-autocomplete.field-error');
+    if (fe) fe.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    return;
+  }
+  if (new Date(raw.dob) >= new Date()) { document.getElementById('dob').style.borderColor = '#dc3545'; return; }
+
+  const fm = [];
+  document.querySelectorAll('.fm-row').forEach(row => {
+    const rid = row.id.replace('fm-row-', '');
+    const ne  = document.getElementById('fm_name_' + rid);
+    const de  = document.getElementById('fm_dob_' + rid);
+    const n   = ne ? ne.value.trim() : '';
+    const d   = de ? de.value : '';
+    if (n || d) fm.push({ name: n, dob: d });
+  });
+
+  _submitting = true;
+  const btn  = document.querySelector('.submit-btn');
+  const orig = btn.innerHTML;
+  btn.disabled = true;
+  btn.innerHTML = currentLang === 'es' ? '⏳ Enviando...' : '⏳ Submitting…';
+
+  function doFetch(token) {
+    fetch(SCRIPT_URL, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify(Object.assign({}, raw, { familyMembers: fm, recaptchaToken: token, smsNotify: true }))
+    }).then(() => {
+      document.getElementById('scnForm').style.display = 'none';
+      document.getElementById('successMsg').style.display = 'block';
+      setLang(currentLang);
+    }).catch(err => {
+      console.error('Fetch error:', err);
+      _submitting = false;
+      btn.disabled = false;
+      btn.innerHTML = orig;
+      alert('❌ Submission failed. Please try again.');
+    });
+  }
+
+  if (typeof grecaptcha !== 'undefined') {
+    grecaptcha.ready(() => {
+      grecaptcha.execute(SITE_KEY, { action: 'submit' }).then(t => doFetch(t)).catch(() => doFetch('none'));
+    });
+  } else {
+    doFetch('none');
+  }
+}
+
+// ✅ Init autocomplete after DOM is ready
+document.addEventListener('DOMContentLoaded', initAutocomplete);
 </script>
+
 </body>
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBCzHut1QaN0YNAUUKpC1RFnV3zcknsW7U&libraries=places&callback=initAutocomplete" async defer> 
-    </script>
 </html>
