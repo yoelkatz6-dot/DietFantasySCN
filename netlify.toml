@@ -1,0 +1,60 @@
+# netlify.toml – dietfantasyscn.com
+# Drop this file in your site root alongside index.html
+
+[build]
+  publish = "."
+  command = ""
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options            = "SAMEORIGIN"
+    X-Content-Type-Options     = "nosniff"
+    X-XSS-Protection           = "1; mode=block"
+    Referrer-Policy            = "strict-origin-when-cross-origin"
+    Permissions-Policy         = "camera=(), microphone=(), geolocation=()"
+
+[[headers]]
+  for = "/*.html"
+  [headers.values]
+    Cache-Control = "public, max-age=3600, must-revalidate"
+
+[[headers]]
+  for = "/sitemap.xml"
+  [headers.values]
+    Cache-Control = "public, max-age=86400"
+    Content-Type  = "application/xml; charset=UTF-8"
+
+[[headers]]
+  for = "/robots.txt"
+  [headers.values]
+    Cache-Control = "public, max-age=86400"
+    Content-Type  = "text/plain; charset=UTF-8"
+
+[[headers]]
+  for = "/*.png"
+  [headers.values]
+    Cache-Control = "public, max-age=2592000, immutable"
+
+[[headers]]
+  for = "/*.jpg"
+  [headers.values]
+    Cache-Control = "public, max-age=2592000, immutable"
+
+[[redirects]]
+  from   = "http://dietfantasyscn.com/*"
+  to     = "https://www.dietfantasyscn.com/:splat"
+  status = 301
+  force  = true
+
+[[redirects]]
+  from   = "http://www.dietfantasyscn.com/*"
+  to     = "https://www.dietfantasyscn.com/:splat"
+  status = 301
+  force  = true
+
+[[redirects]]
+  from   = "https://dietfantasyscn.com/*"
+  to     = "https://www.dietfantasyscn.com/:splat"
+  status = 301
+  force  = true

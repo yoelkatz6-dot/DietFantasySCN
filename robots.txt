@@ -1,0 +1,17 @@
+# robots.txt – dietfantasyscn.com
+# Updated: July 2026
+
+User-agent: *
+Allow: /
+
+Disallow: /admin/
+Disallow: /private/
+Disallow: /tmp/
+
+User-agent: Googlebot
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+Sitemap: https://www.dietfantasyscn.com/sitemap.xml
