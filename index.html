@@ -769,18 +769,44 @@ async function initAutocomplete() {
    });
 
    /* ── Place selection handler ── */
-   async function handlePlaceSelect(e) {
-     try {
-       /*
-         Google minifies the place property name (confirmed 'oh' but can change).
-         We find it robustly: check e.place, e.detail.place, then scan all
-         values for an object that has a fetchFields method.
-       */
-       const place = e.place
-         || (e.detail && e.detail.place)
-         || Object.values(e).find(v => v && typeof v === 'object' && typeof v.fetchFields === 'function');
+async function handlePlaceSelect(e) {
+      try {
+        /* 
+          Strategy 1: standard named properties
+          Strategy 2: for...in — traverses prototype chain, catches minified props like e.oh
+          Strategy 3: getOwnPropertyNames — catches non-enumerable own props
+        */
+        let place = null;
 
-       if (!place) { console.warn('No place object in event'); return; }
+        if (e.place && typeof e.place.fetchFields === 'function') {
+          place = e.place;
+        } else if (e.detail && e.detail.place && typeof e.detail.place.fetchFields === 'function') {
+          place = e.detail.place;
+        }
+
+        if (!place) {
+          for (const key in e) {
+            try {
+              const val = e[key];
+              if (val && typeof val === 'object' && typeof val.fetchFields === 'function') {
+                place = val; break;
+              }
+            } catch(_) {}
+          }
+        }
+
+        if (!place) {
+          for (const key of Object.getOwnPropertyNames(e)) {
+            try {
+              const val = e[key];
+              if (val && typeof val === 'object' && typeof val.fetchFields === 'function') {
+                place = val; break;
+              }
+            } catch(_) {}
+          }
+        }
+
+        if (!place) { console.warn('No place object found'); return; }
 
        await place.fetchFields({ fields: ['addressComponents'] });
 
